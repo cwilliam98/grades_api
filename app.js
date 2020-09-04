@@ -27,7 +27,7 @@ app.use(
 );
 
 app.get('/', (req, res) => {
-  res.send(`API Started at port ${process.env.PORT}`);
+  res.send(`API Started at port ${process.env.PORT} teste`);
 });
 
 app.listen(process.env.PORT || 8081, () => {});
