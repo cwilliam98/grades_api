@@ -9,7 +9,9 @@ import { db } from './models/index.js';
     await db.mongoose.connect(db.url, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      useFindAndModify: false,
     });
+    console.log('Conectado com sucesso...');
   } catch (error) {
     process.exit();
   }
