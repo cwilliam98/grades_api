@@ -1,11 +1,13 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import { gradeRouter } from './routes/gradeRouter.js';
 
 import { db } from './models/index.js';
 
 (async () => {
   try {
+    console.log('Conectando ao banco de dados MongoDB...');
     await db.mongoose.connect(db.url, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -13,6 +15,7 @@ import { db } from './models/index.js';
     });
     console.log('Conectado com sucesso...');
   } catch (error) {
+    console.log(error);
     process.exit();
   }
 })();
@@ -24,12 +27,18 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: 'http://localhost:8080',
+    origin:
+      process.env.PORT_CORS === ''
+        ? process.env.HOST_CORS
+        : `${process.env.HOST_CORS}:${process.env.PORT_CORS}`,
   })
 );
 
+app.use(gradeRouter);
 app.get('/', (req, res) => {
-  res.send(`API Started at port ${process.env.PORT} teste`);
+  res.send('API em execucao');
 });
 
-app.listen(3000, () => {});
+app.listen(process.env.PORT || 8081, () => {
+  console.log(`API Started at port ${process.env.PORT}`);
+});
