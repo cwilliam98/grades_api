@@ -22,7 +22,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: 'https://grades-app-cwilliam.herokuapp.com/grade',
+    origin:
+      process.env.PORT_CORS === ''
+        ? process.env.HOST_CORS
+        : `${process.env.HOST_CORS}:${process.env.PORT_CORS}`,
   })
 );
 
