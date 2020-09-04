@@ -1,9 +1,11 @@
-import { db } from '../models/index.js';
+import { db, gradesModel } from '../models/index.js';
 import { logger } from '../config/logger.js';
 
 const create = async (req, res) => {
   try {
-    res.send({ message: 'Grade inserido com sucesso' });
+    const grade = new gradesModel(req.body);
+    await grade.save();
+    res.send({ message: 'Grade inserido com sucesso', result: grade });
     logger.info(`POST /grade - ${JSON.stringify()}`);
   } catch (error) {
     res
@@ -20,6 +22,9 @@ const findAll = async (req, res) => {
   var condition = name
     ? { name: { $regex: new RegExp(name), $options: 'i' } }
     : {};
+  const grades = await gradesModel.find(condition);
+
+  res.send(grades);
 
   try {
     logger.info(`GET /grade`);
@@ -33,6 +38,9 @@ const findAll = async (req, res) => {
 
 const findOne = async (req, res) => {
   const id = req.params.id;
+
+  const grade = await gradesModel.findById(id);
+  res.send(grade);
 
   try {
     logger.info(`GET /grade - ${id}`);
@@ -51,6 +59,10 @@ const update = async (req, res) => {
 
   const id = req.params.id;
 
+  const newGrade = await gradesModel.findByIdAndUpdate(id);
+
+  res.send(newGrade);
+
   try {
     logger.info(`PUT /grade - ${id} - ${JSON.stringify(req.body)}`);
   } catch (error) {
@@ -61,7 +73,9 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
   const id = req.params.id;
+  const grade = await gradesModel.findByIdAndRemove(id);
 
+  res.send(grade);
   try {
     logger.info(`DELETE /grade - ${id}`);
   } catch (error) {
