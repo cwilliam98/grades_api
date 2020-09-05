@@ -44,10 +44,10 @@ const findAll = async (req, res) => {
 };
 
 const findOne = async (req, res) => {
-  const id = req.params.name;
+  const id = req.params.id;
 
   try {
-    const grade = await gradesModel.find(name);
+    const grade = await gradesModel.find({ _id: id });
     res.send(grade);
     logger.info(`GET /grade - ${id}`);
   } catch (error) {
@@ -81,10 +81,10 @@ const update = async (req, res) => {
 };
 
 const remove = async (req, res) => {
-  const _id = req.params.id;
+  const id = req.params.id;
 
   try {
-    const grade = await gradesModel.findByIdAndDelete(id);
+    const grade = await gradesModel.findByIdAndDelete({ _id: id });
 
     res.send(grade);
     logger.info(`DELETE /grade - ${id}`);
