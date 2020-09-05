@@ -72,6 +72,7 @@ const update = async (req, res) => {
 };
 
 const remove = async (req, res) => {
+  console.log(req.params);
   const id = req.params.id;
 
   try {
