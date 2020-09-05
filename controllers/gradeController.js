@@ -84,7 +84,7 @@ const remove = async (req, res) => {
   const _id = req.params.id;
 
   try {
-    const grade = await gradesModel.findByIdAndDelete(_id);
+    const grade = await gradesModel.findByIdAndDelete(id);
 
     res.send(grade);
     logger.info(`DELETE /grade - ${id}`);

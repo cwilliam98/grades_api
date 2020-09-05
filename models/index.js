@@ -28,6 +28,14 @@ const gradesSchema = mongoose.Schema({
   },
 });
 
+schema.method('toJSON', function () {
+  const { __v, _id, ...object } = this.toObject();
+
+  object.id = _id;
+
+  return object;
+});
+
 const gradesModel = mongoose.model('grades', gradesSchema, 'grades');
 
 export { db, gradesModel };
