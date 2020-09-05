@@ -66,7 +66,11 @@ const update = async (req, res) => {
   try {
     const id = req.params.id;
 
-    const newGrade = await gradesModel.findByIdAndUpdate(id);
+    const newGrade = await gradesModel.findByIdAndUpdate(
+      { _id: id },
+      req.body,
+      { new: true }
+    );
 
     res.send(newGrade);
     logger.info(`PUT /grade - ${id} - ${JSON.stringify(req.body)}`);
@@ -80,7 +84,7 @@ const remove = async (req, res) => {
   const id = req.params.id;
 
   try {
-    const grade = await gradesModel.findByIdAndRemove(id);
+    const grade = await gradesModel.findByIdAndDelete(id);
 
     res.send(grade);
     logger.info(`DELETE /grade - ${id}`);
@@ -94,7 +98,7 @@ const remove = async (req, res) => {
 
 const removeAll = async (req, res) => {
   try {
-    const remove = await gradesModel.removeAll();
+    const remove = await gradesModel.deleteMany();
     if (remove) {
       res.send('removido com sucesso');
     }
