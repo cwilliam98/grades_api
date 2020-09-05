@@ -27,6 +27,13 @@ const findAll = async (req, res) => {
   res.send(grades);
 
   try {
+    //condicao para o filtro no findAll
+    var condition = name
+      ? { name: { $regex: new RegExp(name), $options: 'i' } }
+      : {};
+    const grades = await gradesModel.find(condition);
+
+    res.send(grades);
     logger.info(`GET /grade`);
   } catch (error) {
     res
@@ -39,10 +46,9 @@ const findAll = async (req, res) => {
 const findOne = async (req, res) => {
   const id = req.params.name;
 
-  const grade = await gradesModel.find(name);
-  res.send(grade);
-
   try {
+    const grade = await gradesModel.find(name);
+    res.send(grade);
     logger.info(`GET /grade - ${id}`);
   } catch (error) {
     res.status(500).send({ message: 'Erro ao buscar o Grade id: ' + id });
@@ -57,13 +63,12 @@ const update = async (req, res) => {
     });
   }
 
-  const id = req.params.id;
-
-  const newGrade = await gradesModel.findByIdAndUpdate(id);
-
-  res.send(newGrade);
-
   try {
+    const id = req.params.id;
+
+    const newGrade = await gradesModel.findByIdAndUpdate(id);
+
+    res.send(newGrade);
     logger.info(`PUT /grade - ${id} - ${JSON.stringify(req.body)}`);
   } catch (error) {
     res.status(500).send({ message: 'Erro ao atualizar a Grade id: ' + id });
@@ -73,10 +78,11 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
   const id = req.params.id;
-  const grade = await gradesModel.findByIdAndRemove(id);
 
-  res.send(grade);
   try {
+    const grade = await gradesModel.findByIdAndRemove(id);
+
+    res.send(grade);
     logger.info(`DELETE /grade - ${id}`);
   } catch (error) {
     res
@@ -88,7 +94,11 @@ const remove = async (req, res) => {
 
 const removeAll = async (req, res) => {
   try {
-    logger.info(`DELETE /grade`);
+    const remove = await gradesModel.removeAll();
+    if (remove) {
+      res.send('removido com sucesso');
+    }
+    await logger.info(`DELETE /grade`);
   } catch (error) {
     res.status(500).send({ message: 'Erro ao excluir todos as Grades' });
     logger.error(`DELETE /grade - ${JSON.stringify(error.message)}`);
