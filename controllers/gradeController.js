@@ -56,15 +56,19 @@ const update = async (req, res) => {
     });
   }
 
+  const id = req.params.id;
+  let updateGrade = req.body;
+  delete updateGrade.lastModified;
+  delete updateGrade._id;
+
   try {
-    const id = req.params.id;
-
-    const newGrade = await gradesModel.findByIdAndUpdate(id, req.body, {
-      new: true,
+    await gradesModel.replaceOne({ _id: id }, updateGrade, {
+      $set: { lastModified: '$$NOW' },
     });
-
-    res.send(newGrade);
-    logger.info(`PUT /grade - ${id} - ${JSON.stringify(req.body)}`);
+    //updateGrade = await gradesModel.findOneAndUpdate({ _id: id }, updateGrade, { $set: { lastModified: "$$NOW" }});
+    updateGrade = await gradesModel.findOne({ _id: id });
+    logger.info(`PUT /grade - ${id} - ${updateGrade}`);
+    res.send(`PUT /grade - ${id} - ${updateGrade}`);
   } catch (error) {
     res.status(500).send({ message: 'Erro ao atualizar a Grade id: ' + id });
     logger.error(`PUT /grade - ${JSON.stringify(error.message)}`);
@@ -72,14 +76,15 @@ const update = async (req, res) => {
 };
 
 const remove = async (req, res) => {
-  console.log(req.params);
   const id = req.params.id;
-
   try {
-    const grade = await gradesModel.findByIdAndDelete(id);
-
-    res.send(grade);
-    logger.info(`DELETE /grade - ${id}`);
+    let grade = await gradesModel.findOne({ _id: id });
+    if (grade) {
+      grade = new gradesModel(grade);
+      await grade.deleteOne();
+      logger.info(`DELETE /grade - ${id}`);
+    }
+    res.send(`DELETE /grade - ${id}`);
   } catch (error) {
     res
       .status(500)
