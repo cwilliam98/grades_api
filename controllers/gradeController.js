@@ -22,15 +22,8 @@ const findAll = async (req, res) => {
   var condition = name
     ? { name: { $regex: new RegExp(name), $options: 'i' } }
     : {};
-  const grades = await gradesModel.find(condition);
-
-  res.send(grades);
 
   try {
-    //condicao para o filtro no findAll
-    var condition = name
-      ? { name: { $regex: new RegExp(name), $options: 'i' } }
-      : {};
     const grades = await gradesModel.find(condition);
 
     res.send(grades);
